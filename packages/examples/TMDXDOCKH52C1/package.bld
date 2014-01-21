@@ -1,0 +1,112 @@
+/*
+ * Copyright (c) 2013, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ *  ======== package.bld ========
+ */
+
+/* Library include paths are defined from config.bld */
+if ((typeof(MWareDir) == undefined) || (MWareDir == "")) {
+    throw("ERROR: NO VALID MWARE PATH DEFINED!!!");
+}
+
+var coptsIncludePath = " -I" + MWareDir + " -DMWARE";
+var loptsDriverLibLinkerPath = " -l" + MWareDir + "/driverlib/ccs/Debug/driverlib.lib";
+var loptsUsbLibLinkerPath = " -l" + MWareDir + "/usblib/ccs/Debug/usblib.lib";
+
+var exampleArray = [
+    { 
+      name: ['TMDXDOCKH52C1_empty'],
+      config: ['empty'],
+      copts: [coptsIncludePath + " -DF28M35X "],
+      lopts: [loptsDriverLibLinkerPath + loptsUsbLibLinkerPath + " TMDXDOCKH52C1.cmd -x"],
+      sources: ['empty.c', 'TMDXDOCKH52C1.c'],
+      buildPlatforms: ["ti.platforms.concertoM3:F28M35H52C1"],
+      suffixList: ["em3"],
+    },
+	{ 
+      name: ['TMDXDOCKH52C1_empty_min'],
+      config: ['empty_min'],
+      copts: [coptsIncludePath + " -DF28M35X "],
+      lopts: [loptsDriverLibLinkerPath + loptsUsbLibLinkerPath + " TMDXDOCKH52C1.cmd -x"],
+      sources: ['empty_min.c', 'TMDXDOCKH52C1.c'],
+      buildPlatforms: ["ti.platforms.concertoM3:F28M35H52C1"],
+      suffixList: ["em3"],
+    },
+
+    {
+      name: ['TMDXDOCKH52C1_demo_m3'],
+      config: ['demo/demo'],
+      copts: [coptsIncludePath + " -DF28M35X "],
+      lopts: [loptsDriverLibLinkerPath + loptsUsbLibLinkerPath + " -x --stack_size=1024 --heap_size=0 --warn_sections --rom_model TMDXDOCKH52C1.cmd"],
+      sources: ['demo/demo.c', 'demo/webpage.c', 'demo/cmdline.c', '../USBCDCD_LoggerIdle.c', 'TMDXDOCKH52C1.c'],
+      buildPlatforms: ["ti.platforms.concertoM3:F28M35H52C1"],
+      ccsCopyFiles: ['demo/demo.h', 'TMDXDOCKH52C1.h', 'demo/dspchip.h'],
+      ccsCopyFiles: ['demo/logobar.h', 'demo/default.h', '../USBCDCD_LoggerIdle.h'],
+      ccsCopyFiles: ['demo/jquery.min.h', 'demo/jquery.flot.min.h', 'demo/layout.css.h'],
+      ccsCopyFiles: ['demo/demo_readme.txt'],
+      ccsLinkerFile: ['TMDXDOCKH52C1.cmd'],
+      suffixList: ["em3"],
+    }
+];
+
+/* Test build */
+var testBld = xdc.loadCapsule("ti/tirtos/build/test.bld");
+
+Pkg.makePrologue = "vpath %.c $(subst ;,  ,$(XPKGPATH))\nvpath %.asm $(subst ;,  ,$(XPKGPATH))";
+
+/* Generate the makefile goals. 'arguments' is XDCARGS */
+arguments = ["profile=release", "platform=all"];
+
+/* Build the empty examples and demo for sanity check */
+testBld.buildTests(exampleArray, arguments);
+
+Pkg.otherFiles = [
+    "package.bld",
+    "empty.c",
+    "empty.cfg",
+    "empty_min.c",
+    "empty_min.cfg",
+    "TMDXDOCKH52C1.c",
+    "TMDXDOCKH52C1.h",
+    "TMDXDOCKH52C1.cmd",
+    "Board.h",
+    "demo_c28.cmd",
+    "demo"
+];
+
+/*
+ *  Export everything necessary to build this package with (almost) no
+ *  generated files.  This also exports subdirectories like 'golden'
+ *  and 'docs'.
+ */
+Pkg.attrs.exportAll = true;

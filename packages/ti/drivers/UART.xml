@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="UART" title="UART Driver Configuration Options" version="1">
+
+<page name="Basic" title="Basic">
+<html><body><table>
+
+  <tr>
+    <td>
+      <form>
+        <p>The UART module allows an application to automatically bring in the UART Driver.</p>
+        <p> </p>
+      </form>
+    </td>
+  </tr>
+
+  <tr><td>
+    <control type="checkbox" label="Add UART to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+
+  <tr>
+    <td>
+    <h1>Library Selection Options</h1>
+    <table>
+      <tr>
+        <td><control type="radiogroup" value="value:ti.drivers.UART.libType" label="UART Driver Library Type" tooltip="value:ti.drivers.UART.libType.$summary" align="left" /></td>
+
+      </tr>
+
+    </table>
+    <form><p>The library options above allow you to select either instrumented or non-instrumented UART runtime support.</p><p></p></form>
+    </td>
+  </tr>
+
+</table></body></html>
+</page>
+
+<properties name="Advanced" title="All Options" enabled="true" visible="true" link="ti.drivers.UART"/>
+</gep>

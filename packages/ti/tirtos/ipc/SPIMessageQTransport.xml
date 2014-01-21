@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="SPIMessageQTransport" title="SPIMessageQTransport.xml Configuration" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>A MessageQ Transport module which uses SPI.</p>
+        <p> </p>
+        <p> This IMessageQTransport module allows an application to specify the
+            usage of SPI as the MessageQ transport between devices. </p>
+        <p> </p>
+      </form></td>
+  </tr>
+  <tr>
+      <td><control type="checkbox" label="Add the SPIMessageQTransport module to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr>
+    <td>
+    <h1>Transport Options</h1>
+    <table>
+      <tr>
+        <td><control type="checkbox" label="Device is SPI Master" value="value:this.master" tooltip="value:this.master.$summary"/></td>
+      </tr>
+      <tr>
+        <td><control type="checkbox" label="Checksum each message" value="value:this.checksumEnabled" tooltip="value:this.checksumEnabled.$summary"/></td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+    <h1>Library Selection Options</h1>
+    <table>
+      <tr>
+        <td><control type="radiogroup" value="value:ti.tirtos.ipc.SPIMessageQTransport.libType" label="SPIMessageQTransport Library Type" tooltip="value:ti.drivers.EMAC.libType.$summary" align="left" /></td>
+      </tr>
+    </table>
+    <form><p>The library options above allow you to select either instrumented or non-instrumented SPIMessageQTransport library.</p><p></p></form>
+    </td>
+  </tr>
+</table></body></html>
+</page>
+</gep>

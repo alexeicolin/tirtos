@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="USBMSCHFatFs" title="USBMSCHFatFs Driver Configuration Options" version="1">
+
+<page name="Basic" title="Basic">
+<html><body><table>
+
+  <tr>
+    <td>
+      <form>
+        <p>The USBMSCHFatFs module allows an application to automatically bring in the USBMSCHFatFs Driver.</p>
+        <p> </p>
+      </form>
+    </td>
+  </tr>
+
+  <tr><td>
+    <control type="checkbox" label="Add USBMSCHFatFs to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+
+  <tr>
+    <td>
+    <h1>Library Selection Options</h1>
+    <table>
+      <tr>
+        <td><control type="radiogroup" value="value:ti.drivers.USBMSCHFatFs.libType" label="USBMSCHFatFs Driver Library Type" tooltip="value:ti.drivers.USBMSCHFatFs.libType.$summary" align="left" /></td>
+
+      </tr>
+
+    </table>
+    <form><p>The library options above allow you to select either instrumented or non-instrumented USBMSCHFatFs runtime support.</p><p></p></form>
+    </td>
+  </tr>
+
+</table></body></html>
+</page>
+
+<properties name="Advanced" title="All Options" enabled="true" visible="true" link="ti.drivers.USBMSCHFatFs"/>
+</gep>

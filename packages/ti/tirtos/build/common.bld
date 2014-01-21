@@ -1,0 +1,273 @@
+/*
+ * Copyright (c) 2013, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ *  ======== common.bld ========
+ */
+
+/*
+ *  ======== getProfiles ========
+ *  Determines which profiles to build for.
+ *
+ *  Any argument in XDCARGS which does not contain platform= is treated
+ *  as a profile. This way multiple build profiles can be specified by
+ *  separating them with a space.
+ */
+function getProfiles(xdcArgs)
+{
+    /*
+     * cmdlProf[1] gets matched to "whole_program,debug" if
+     * ["abc", "profile=whole_program,debug"] is passed in as xdcArgs
+     */
+    var cmdlProf = (" " + xdcArgs.join(" ") + " ").match(/ profile=([^ ]+) /);
+
+
+    if (cmdlProf == null) {
+        /* No profile=XYZ found */
+        return [];
+    }
+
+    /* Split "whole_program,debug" into ["whole_program", "debug"] */
+    var profiles = cmdlProf[1].split(',');
+
+    return profiles;
+}
+
+/*
+ *  ======== buildLibs ========
+ *  This function generates the makefile goals for the libraries
+ *  produced by a ti.sysbios package.
+ *
+ *  libAttrs: struct of type xdc.bld.Library.Attrs.  This arg is used to pass
+ *            assembler, compiler and linker options for the build of the
+ *            library.
+ */
+function buildLibs(objList, name, relList, filter, xdcArgs, libAttrs)
+{
+    for (var i = 0; i < Build.targets.length; i++) {
+        var targ = Build.targets[i];
+
+        /* skip target if not supported */
+        if (!supportsTarget(targ, filter)) {
+            continue;
+        }
+
+        var profiles = getProfiles(xdcArgs);
+
+        /* If no profiles were assigned, use only the default one. */
+        if (profiles.length == 0) {
+            /* all ti.targets are built only with whole_program_debug profile */
+            if (targ.$name.match(/^ti\.targets\./)) {
+                profiles[0] = "release";
+            }
+            else if(targ.$name.match(/^gnu\.targets\./)) {
+                profiles[0] = "release";
+            }
+            else if(targ.$name.match(/^iar\.targets\./)) {
+                profiles[0] = "release";
+            }
+            else {
+                profiles[0] = "debug";
+                profiles[1] = "release";
+            }
+        }
+
+        /* initialize the library attrs struct */
+        var attrs = {
+                profile:   "",
+                aopts:     "",
+                copts:     "",
+                defs:      "",
+                incs:      "",
+                aropts:    "",
+        }
+
+        attrs.releases = relList;
+
+        if (libAttrs != undefined) {
+            /*
+             *  User passed in a libAttrs struct with library options.
+             *
+             *  Build the xdc.bld.Library.Attrs struct based on the values set in
+             *  'libAttrs' struct:
+             */
+            attrs.aopts  = (libAttrs.aopts  == undefined) ? "" : libAttrs.aopts;
+            attrs.copts  = (libAttrs.copts  == undefined) ? "" : libAttrs.copts;
+            attrs.defs   = (libAttrs.defs   == undefined) ? "" : libAttrs.defs;
+            attrs.incs   = (libAttrs.incs   == undefined) ? "" : libAttrs.incs;
+            attrs.aropts = (libAttrs.aropts == undefined) ? "" : libAttrs.aropts;
+        }
+        if(targ.suffix == "r430XS"){
+            attrs.copts += " -I" + targ.rootDir + "/inc" + " -I" + targ.rootDir
+                + "/inc/dlib/c";
+        }
+        else if(targ.suffix == "e430X"){
+            attrs.copts += " -I" + MSP430Headers;
+        }
+
+        /* Instrumented */
+        /*
+         * Note, it is safe to keep
+         * xdc_runtime_Assert_DISABLE_CONDITIONAL_ASSERT defined in the
+         * non-instrumented library because xdc_runtime_Log_DISABLE_ALL overrides
+         * this definition.
+         * See xdc/runtime/Assert__prologue.h
+         */
+        attrs.copts = attrs.copts + " -Dxdc_runtime_Assert_DISABLE_CONDITIONAL_ASSERT";
+        for (var j = 0; j < profiles.length; j++) {
+            var profile = profiles[j];
+            attrs.profile = profile;
+
+            if (name != undefined) {
+                var lib = Pkg.addLibrary('lib/instrumented/' + name,
+                          targ, attrs);
+            }
+            else {
+                var lib = Pkg.addLibrary('lib/' + profile + '/' + Pkg.name,
+                          targ, attrs);
+
+            }
+            lib.addObjects(objList);
+        }
+
+        /* Non-Instrumented */
+        attrs.copts = attrs.copts + " -Dxdc_runtime_Log_DISABLE_ALL";
+        attrs.copts = attrs.copts + " -Dxdc_runtime_Assert_DISABLE_ALL";
+        for (var j = 0; j < profiles.length; j++) {
+            var profile = profiles[j];
+            attrs.profile = profile;
+
+            if (name != undefined) {
+                var lib = Pkg.addLibrary('lib/nonInstrumented/' + name,
+                          targ, attrs);
+                lib.addObjects(objList);
+            }
+        }
+    }
+}
+
+/*
+ *  ======== supportsTarget ========
+ *  Returns true if target is in the filter object. If filter
+ *  is null or empty, that's taken to mean all targets are supported.
+ */
+function supportsTarget(target, filter)
+{
+    var list, field;
+
+    if (filter == null) {
+        return true;
+    }
+
+    /*
+     * For backwards compatibility, we support filter as an array of
+     * target names.  The preferred approach is to specify filter as
+     * an object with 'field' and 'list' elements.
+     *
+     * Old form:
+     *     var trgFilter = [ "Arm9", "Arm9t", "Arm9t_big_endian" ]
+     *
+     * New (preferred) form:
+     *
+     *     var trgFilter = {
+     *         field: "isa",
+     *         list: [ "v5T", "v7R" ]
+     *     };
+     *
+     */
+    if (filter instanceof Array) {
+        list = filter;
+        field = "name";
+    }
+    else {
+        list = filter.list;
+        field = filter.field;
+    }
+
+    if (list == null || field == null) {
+        throw("invalid filter parameter, must specify list and field!");
+    }
+
+    if (field == "noIsa") {
+        if (String(','+list.toString()+',').match(','+target["isa"]+',')) {
+            return (false);
+        }
+        return (true);
+    }
+
+    /*
+     * add ',' at front and and tail of list and field strings to allow
+     * use of simple match API.  For example, the string is updated to:
+     * ',v5T,v7R,' to allow match of ',v5t,'.
+     */
+    if (String(','+list.toString()+',').match(','+target[field]+',')) {
+        return (true);
+    }
+
+    return (false);
+}
+
+/*
+ *  ======== getCompilerLinkerOptions ========
+ *  Return the *ware compiler and linker include path for a given device and
+ *  *ware path
+ */
+function getCompilerLinkerOptions(part, path)
+{
+    var compilerOptions = "";
+    var compilerSearchPath = "";
+    var linkerLibPath = "";
+
+    /* MSP430FR57xx */
+    if      (part.match(/MSP430FR57[\d\w]*/g)) {
+        compilerSearchPath = " -I" + path + "/driverlib/MSP430FR57xx"
+        compilerOptions = " -D__" + part + "__" + compilerSearchPath;
+        linkerLibPath = " -l" + path + "/driverlib/ccs-" + part + "/ccs-" + part + ".lib";
+    }
+    /* MSP430FR5xx_6xx */
+    else if (part.match(/MSP430FR[56]\d\w]*/g)) {
+        compilerSearchPath = " -I" + path + "/driverlib/MSP430FR5xx_6xx"
+        compilerOptions = " -D__" + part + "__" + compilerSearchPath;
+        linkerLibPath = " -l" + path + "/driverlib/ccs-" + part + "/ccs-" + part + ".lib";
+    }
+    /* MSP430F5xx_6xx */
+    else if (part.match(/MSP430F[56][\d\w]*/g)) {
+        compilerSearchPath = " -I" + path + "/driverlib/MSP430F5xx_6xx"
+        compilerOptions = " -D__" + part + "__" + compilerSearchPath;
+        linkerLibPath = " -l" + path + "/driverlib/ccs-" + part + "/ccs-" + part + ".lib";
+    }
+    else {
+        throw("Invalid part:'" + part + "' supplied");
+    }
+
+    return ({copts: compilerOptions, cIncludePath: compilerSearchPath, lIncludeLibPath: linkerLibPath});
+}

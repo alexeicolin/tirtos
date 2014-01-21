@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="EMAC" title="EMAC Driver Configuration Options" version="1">
+
+<page name="Basic" title="Basic">
+<html><body><table>
+
+  <tr>
+    <td>
+      <form>
+        <p>The EMAC module allows an application to automatically bring in the EMAC Driver.</p>
+        <p> </p>
+      </form>
+    </td>
+  </tr>
+
+  <tr><td>
+    <control type="checkbox" label="Add EMAC to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+
+  <tr>
+    <td>
+    <h1>Library Selection Options</h1>
+    <table>
+      <tr>
+        <td><control type="radiogroup" value="value:ti.drivers.EMAC.libType" label="EMAC Driver Library Type" tooltip="value:ti.drivers.EMAC.libType.$summary" align="left" /></td>
+
+      </tr>
+
+    </table>
+    <form><p>The library options above allow you to select either instrumented or non-instrumented EMAC runtime support.</p><p></p></form>
+    </td>
+  </tr>
+
+</table></body></html>
+</page>
+
+<properties name="Advanced" title="All Options" enabled="true" visible="true" link="ti.drivers.EMAC"/>
+</gep>

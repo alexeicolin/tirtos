@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="WiFi" title="WiFi Driver Configuration Options" version="1">
+
+<page name="Basic" title="Basic">
+<html><body><table>
+
+  <tr>
+    <td>
+      <form>
+        <p>The WiFi module allows an application to automatically bring in the WiFi Driver.</p>
+        <p> </p>
+      </form>
+    </td>
+  </tr>
+
+  <tr><td>
+    <control type="checkbox" label="Add WiFi to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+
+  <tr>
+    <td>
+    <h1>Library Selection Options</h1>
+    <table>
+      <tr>
+        <td><control type="radiogroup" value="value:ti.drivers.WiFi.libType" label="WiFi Driver Library Type" tooltip="value:ti.drivers.WiFi.libType.$summary" align="left" /></td>
+
+        <td><control type="radiogroup" value="value:ti.drivers.WiFi.hdType" label="WiFi Host Driver Type" tooltip="value:ti.drivers.WiFi.hdType.$summary" align="left" /></td>
+      </tr>
+    </table>
+    <form><p>The library options above allow you to select either instrumented or non-instrumented WiFi runtime support. It also allows you to choose between a library built with a single-thread version of the WiFi device's host driver or a multi-thread version.</p><p></p></form>
+    </td>
+    <td>
+     <h1>SelectThread Priority</h1>
+      <form>
+        <p>The SelectThread is a task created by the multi-thread version of the host driver to prevent long host driver calls such as recv() and accept() from preventing other tasks from making host driver API calls while they wait for a response.</p>
+        <p>You may select the Task priority as you would for any other Task instance.</p>
+      </form>
+      <table>  
+       <tr>
+        <td><control type="label" label="SelectThread priority" align="left"/></td>
+        <td><control type="editbox"
+             enabled="value:ti.drivers.WiFi.hdType==ti.drivers.WiFi.HDType_MultiThread"
+             value="value:ti.drivers.WiFi.selectThreadPriority"
+             tooltip="Priority of the SelectThread."/></td>
+       </tr>
+      </table>
+    </td>    
+  </tr>
+
+  <tr>
+   <td>
+    <h1>WiFi Transfer and Receive Payload Sizes</h1>
+    <form>
+      <p>The TX and RX buffers are used for sending commands and data to the Wi-Fi device. In order to determine how large to make these buffers, the maximum payload data amount must be specified.</p>
+      <p>Neither payload may be any larger than 1460 bytes.</p>
+    </form>
+    <table>
+      <tr>
+        <td><control type="label" label="Maximum TX payload size (bytes)" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:ti.drivers.WiFi.txPayloadSize"
+             tooltip="Maximum size of the data payload that will be sent from the Wi-Fi device."/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Maximum RX payload size (bytes)" align="left"/></td>
+        <td><control type="editbox" 
+             value="value:ti.drivers.WiFi.rxPayloadSize"
+             tooltip="Maximum size of the data payload that the Wi-Fi device will receive."/></td>
+      </tr>
+    </table>
+   </td>
+  </tr>
+  
+</table></body></html>
+</page>
+
+<properties name="Advanced" title="All Options" enabled="true" visible="true" link="ti.drivers.WiFi"/>
+</gep>

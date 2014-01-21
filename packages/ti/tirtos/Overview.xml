@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<gep name="SYS/BIOS Overview" title="SYS/BIOS Overview" version="1">
+    <page name="TI-RTOS" title="TI-RTOS Configuration" DPI="2540">
+        <control type="bitmap" image="Overview.svg" width="19050" height="17780"/>
+        <control type="hotspot" link="ref:ti.sysbios.BIOS" align="center" tooltip="SYS/BIOS Configuration Settings" left="3810" top="5715" width="6350" height="1270" italic="true"/>
+        <control type="hotspot" enabled="value:this.fatfsCompatible" link="ref:ti.sysbios.fatfs.FatFS" align="center" tooltip="FAT File System (FatFS) Configuration Settings" left="15240" top="5715" width="2540" height="1270" bold="true" italic="true"/>
+        <control type="hotspot" enabled="value:this.ndkCompatible" link="ref:ti.ndk.config.Global" align="center" tooltip="Network Developer&apos;s Kit (NDK) Configuration Settings" left="9843" top="2064" width="2540" height="1270" italic="true"/>
+        <control type="hotspot" enabled="value:this.uartmonCompatible" link="ref:ti.tirtos.utils.UARTMon" align="center" tooltip="UART Monitor for GUI Composer" left="3810" top="2064" width="2540" height="1310" italic="true"/>
+        <control type="hotspot" enabled="value:this.uiaCompatible" link="ref:ti.uia.sysbios.LoggingSetup" align="center" tooltip="Unified Instrumentation Architecture (UIA) Configuration Settings" left="1111" top="2064" width="2540" height="1310" italic="true"/>
+        <control type="hotspot" enabled="value:this.emacDriverCompatible" link="ref:ti.drivers.EMAC" align="center" tooltip="EMAC Driver Configuration Settings" left="1111" top="9525" width="2540" height="1270" italic="true"/>
+        <control type="hotspot" enabled="value:this.gpioDriverCompatible" link="ref:ti.drivers.GPIO" align="center" tooltip="GPIO Driver Configuration Settings" left="3810" top="9525" width="2540" height="1270" italic="true"/>
+        <control type="hotspot" enabled="value:this.i2cDriverCompatible" link="ref:ti.drivers.I2C" align="center" tooltip="I2C Driver Configuration Settings" left="6509" top="9525" width="2540" height="1270" italic="true"/>
+        <control type="hotspot" enabled="value:this.sdspiDriverCompatible" link="ref:ti.drivers.SDSPI" align="center" tooltip="SDSPI Driver Configuration Settings" left="15558" top="9525" width="2540" height="1270" italic="true"/>
+        <control type="hotspot" enabled="value:this.spiDriverCompatible" link="ref:ti.drivers.SPI" align="center" tooltip="SPI Driver Configuration Settings" left="9208" top="9525" width="2540" height="1270" italic="true"/>
+        <control type="hotspot" enabled="value:this.uartDriverCompatible" link="ref:ti.drivers.UART" align="center" tooltip="UART Driver Configuration Settings" left="1111" top="10954" width="2540" height="1270" italic="true"/>
+        <control type="hotspot" enabled="value:this.usbmschfatfsDriverCompatible" link="ref:ti.drivers.USBMSCHFatFs" align="center" tooltip="USBMSCHFatFs Driver Configuration Settings" left="12859" top="9525" width="2540" height="1270" italic="true"/>
+        <control type="hotspot" enabled="value:this.watchdogDriverCompatible" link="ref:ti.drivers.Watchdog" align="center" tooltip="Watchdog Driver Configuration Settings" left="3810" top="10954" width="2540" height="1270" italic="true"/>
+        <control type="hotspot" enabled="value:this.wifiDriverCompatible" link="ref:ti.drivers.WiFi" align="center" tooltip="WiFi Driver Configuration Settings" left="6509" top="10954" width="2540" height="1270" italic="true"/>
+    </page>
+
+</gep>

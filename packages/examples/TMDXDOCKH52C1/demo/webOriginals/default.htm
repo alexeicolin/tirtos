@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>TI-RTOS Demo</title>
+
+<link type="text/css" rel="stylesheet" href="layout.css">
+<script language="javascript" type="text/javascript" src="jquery.min.js"></script>
+<script language="javascript" type="text/javascript" src="jquery.flot.min.js"></script></head>
+<body style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">
+<input><input>
+<center>
+<table width="90%">
+<tbody>
+<tr>
+<td align="center">
+<p><img src="logobar.gif"></p>
+<h1>TI-RTOS Demo&nbsp;</h1>
+<hr width="100%">
+<table>
+<tbody>
+<tr>
+<td valign="center"><img src="dspchip.gif">
+</td>
+<td submit="" center="" align=" type=" width="90%">
+<h2>This page demonstrates how TCP/IP can be used to
+interface your Concerto application to a standard WEB browser.</h2>
+</td>
+</tr>
+</tbody>
+</table>
+<hr width="100%">
+<table>
+<tbody>
+<tr>
+<td align="center" width="60%">This
+this a small example page being served out of a RAM file
+system. It uses CGI functions on the Concerto to dynamically create
+HTML
+WEB pages. The form to the right uses the CGI "post" operation
+to command the Concerto to generate simple HTTP response pages based on
+current TCP/IP status.
+</td>
+<td align="center"><br>
+<form method="post" action="inform.cgi">
+<table border="1">
+<tbody>
+<tr>
+<td align="center"><i>View
+real-time TCP/IP stack statistics</i></td>
+</tr>
+<tr>
+<td align="left"><input name="ip" value="ipinfo" checked="checked" type="radio">Display
+IP
+Address Information<br>
+<input name="ip" value="sockets" type="radio">Display Sockets Usage<br>
+<input name="ip" value="route" type="radio">Display Route Table
+</td>
+</tr>
+<tr>
+<td align="center"><input value="Display Selected Item" type="submit"></td>
+</tr>
+</tbody>
+</table>
+</form>
+</td>
+</tr>
+</tbody>
+</table>
+<hr width="100%">
+<br>
+<big><big><span style="font-weight: bold;">M3
+SYS/BIOS&nbsp;information</span><br>
+<br>
+</big></big>Task info:&nbsp;
+<a href="listTasks.cgi">listTasks.cgi</a><br>
+HeapMem info:&nbsp;
+<a href="listHeapMems.cgi">listHeapMems.cgi</a><br>
+Load info:&nbsp;
+<a href="listLoad.cgi">listLoad.cgi</a><br>
+<br>
+<big><big><span style="font-weight: bold;">Enable/Disable
+Temperature Recording to SD Card</span><br>
+</big></big>
+<form id="enable" action="enableRecording.cgi"><big><big><input value="Enable" type="submit"></big></big></form>
+<form id="disable" action="disableRecording.cgi"><big><big><input value="Disable" type="submit"></big></big>
+<hr width="100%"></form>
+</td>
+</tr>
+<tr>
+<td align="center"><big><big><span style="font-weight: bold;">Temperature Reading via I2C<br></span><small><small><small>(if no graph appears directly below, try using a newer or different browser)</small></small></small><span style="font-weight: bold;"><br></span>
+<br>
+</big></big>
+<div class="wrapper">
+<div class="left_box" id="temp" style="height: 300px;"></div>
+<div class="right_box" id="accel" style="height: 300px;"></div>
+</div>
+<big><big>
+<script type="text/javascript">
+$(function () { $('#example').submit(function() {
+//alert("button pressed");
+$.get("cgi-bin/dataT", function(result) {
+//alert(result);
+$('#mainid').append(result);
+});
+return false;
+});
+var dataURL = "listDataT.cgi";
+var period = 500;
+var options = {
+series : { shadowSize : 0 },
+yaxis : { min: 0, max: 100 },
+xaxis : { show: false, min: 0, max: 50 },
+};
+var valuesF = [];
+var valuesC = [];
+for (var i = 0; i < 50; i++) {
+valuesF[i] = [i, 0];
+valuesC[i] = [i, 1];
+}
+var dataSet = [
+{label: "&#176F (computed by c28)", data: valuesF},
+{label: "&#176C (read by M3)", data: valuesC}
+];
+var plot = $.plot($("#temp"), dataSet, options);
+function update(data)
+{
+for (var i = dataSet[0].data.length - 1; i > 0; i--) {
+dataSet[0].data[i][1] = dataSet[0].data[i - 1][1];
+dataSet[1].data[i][1] = dataSet[1].data[i - 1][1];
+}
+var values = data.split(" ");
+dataSet[0].data[0][1] = parseInt(values[0]);
+dataSet[1].data[0][1] = parseInt(values[1]);
+plot.setData(dataSet);
+plot.draw();
+setTimeout(getData, period);
+}
+function getData()
+{
+var jqhr = $.get(dataURL, update);
+jqhr.error(function() { alert("error"); });
+// update(Math.floor((Math.random() * 100)).toString());
+}
+setTimeout(getData, period);
+});
+</script></big></big></td>
+</tr>
+</tbody>
+</table>
+</center>
+</body></html>

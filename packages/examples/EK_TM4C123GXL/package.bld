@@ -1,0 +1,137 @@
+/*
+ * Copyright (c) 201333, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ *  ======== package.bld ========
+ */
+
+/* Library include paths are defined from config.bld */
+if ((typeof(TivaWareDir) == undefined) || (TivaWareDir == "")) {
+    throw("ERROR: NO VALID TIVAWARE PATH DEFINED!!!");
+}
+
+var coptsIncludePath = " -I" + TivaWareDir + " -DTIVAWARE";
+var loptsDriverLibLinkerPath  = " -l" + TivaWareDir + "/driverlib/ccs/Debug/driverlib.lib";
+var loptsUsbLibLinkerPath = " -l" + TivaWareDir + "/usblib/ccs/Debug/usblib.lib";
+var iarLoptsDriverLibLinkerPath  = " " + TivaWareDir + "/driverlib/ewarm/Exe/driverlib.a";
+var iarLoptsUsbLibLinkerPath = " " + TivaWareDir + "/usblib/ewarm/Exe/usblib.a";
+
+var emptyArray = [
+    {
+      name: ['EK_TM4C123GXL_empty'],
+      config: ['empty'],
+      copts: [coptsIncludePath + " -DPART_TM4C123GH6PM"],
+      lopts: [loptsDriverLibLinkerPath + " EK_TM4C123GXL.cmd -x"],
+      sources: ['empty.c', 'EK_TM4C123GXL.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C123GH6PM"],
+      suffixList: ["em4f"],
+    },
+	{
+      name: ['EK_TM4C123GXL_empty_min'],
+      config: ['empty_min'],
+      copts: [coptsIncludePath + " -DPART_TM4C123GH6PM"],
+      lopts: [loptsDriverLibLinkerPath + " EK_TM4C123GXL.cmd -x"],
+      sources: ['empty_min.c', 'EK_TM4C123GXL.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C123GH6PM"],
+      suffixList: ["em4f"],
+    }
+];
+
+var testArray = [
+    {
+      name: ['EK_TM4C123GXL_spiloopback'],
+      config: ['../spiloopback'],
+      copts: [coptsIncludePath + " -DPART_TM4C123GH6PM"],
+      lopts: [loptsDriverLibLinkerPath + " EK_TM4C123GXL.cmd -x"],
+      sources: ['../spiloopback.c', 'EK_TM4C123GXL.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C123GH6PM"],
+      suffixList: ["em4f"],
+    },
+    {
+      name: ['EK_TM4C123GXL_i2ctmp006'],
+      config: ['../i2ctmp006'],
+      copts: [coptsIncludePath + " -DPART_TM4C123GH6PM"],
+      lopts: [loptsDriverLibLinkerPath + " EK_TM4C123GXL.cmd -x"],
+      sources: ['../i2ctmp006.c', 'EK_TM4C123GXL.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C123GH6PM"],
+      suffixList: ["em4f"],
+    },
+    {
+      name: ['EK_TM4C123GXL_i2ctpl0401evm'],
+      config: ['../i2ctpl0401evm'],
+      copts: [coptsIncludePath + " -DPART_TM4C123GH6PM"],
+      lopts: [loptsDriverLibLinkerPath + " EK_TM4C123GXL.cmd -x"],
+      sources: ['../i2ctpl0401evm.c', 'EK_TM4C123GXL.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C123GH6PM"],
+      suffixList: ["em4f"],
+    },
+    {
+      name: ['EK_TM4C123GXL_i2crf430cl330_load'],
+      config: ['../i2crf430cl330_load'],
+      copts: [coptsIncludePath + " -DPART_TM4C123GH6PM"],
+      lopts: [loptsDriverLibLinkerPath + " EK_TM4C123GXL.cmd -x"],
+      sources: ['../i2crf430cl330_load.c', 'EK_TM4C123GXL.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C123GH6PM"],
+      suffixList: ["em4f"],
+    },
+];
+
+/* Test build */
+var testBld = xdc.loadCapsule("ti/tirtos/build/test.bld");
+
+Pkg.makePrologue = "vpath %.c $(subst ;,  ,$(XPKGPATH))\nvpath %.asm $(subst ;,  ,$(XPKGPATH))";
+
+/* Generate the makefile goals. 'arguments' is XDCARGS */
+arguments = ["profile=release", "platform=all"];
+
+/* Build the empty examples */
+testBld.buildTests(emptyArray, arguments);
+//testBld.buildTests(testArray, arguments);
+
+Pkg.otherFiles = [
+    "package.bld",
+    "empty.c",
+    "empty.cfg",
+    "empty_min.c",
+    "empty_min.cfg",
+    "EK_TM4C123GXL.c",
+    "EK_TM4C123GXL.h",
+    "EK_TM4C123GXL.cmd",
+    "Board.h",
+];
+
+/*
+ *  Export everything necessary to build this package with (almost) no
+ *  generated files.  This also exports subdirectories like 'golden'
+ *  and 'docs'.
+ */
+Pkg.attrs.exportAll = true;

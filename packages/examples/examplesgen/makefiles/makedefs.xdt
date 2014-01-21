@@ -1,0 +1,108 @@
+%%{
+    var Board = $args[0];
+    var toolchain = $args[1];
+    var tirtos = $args[2];
+    var xdctools = $args[3];
+    var bios = $args[4];
+    var uia = $args[5];
+    var ndk = $args[6];
+    var tivaware = $args[7];
+    var mware = $args[8];
+    var msp430 = $args[9];
+    var codegendir = $args[10];
+%%}
+###### CHANGE LOCATION TO YOUR CODEGEN TOOLS INSTALLATION DIR. UNIX PATH (no backslashes) #######
+%if(toolchain == "IAR"){
+%   if(Board.variant == "msp430"){
+CODEGEN_INSTALLATION_DIR = `codegendir`/430
+%}
+%   else{
+CODEGEN_INSTALLATION_DIR = `codegendir`/arm
+%}
+%}
+%if(toolchain == "GNU"){
+CODEGEN_INSTALLATION_DIR = `codegendir`
+%}
+%if(toolchain == "TI"){
+%   if(Board.variant == "msp430"){
+CODEGEN_INSTALLATION_DIR = `codegendir`/msp430_4.2.1
+%}
+%   else{
+CODEGEN_INSTALLATION_DIR = `codegendir`/arm_5.1.1
+%}
+%}
+
+%if(toolchain == "IAR"){
+%    if(Board.variant == "msp430"){
+CC =  "$(CODEGEN_INSTALLATION_DIR)/bin/icc430"
+
+LNK = "$(CODEGEN_INSTALLATION_DIR)/bin/xlink"
+%}
+%    else{
+CC =  "$(CODEGEN_INSTALLATION_DIR)/bin/iccarm"
+
+LNK = "$(CODEGEN_INSTALLATION_DIR)/bin/ilinkarm"
+%}
+%}
+%if(toolchain == "GNU"){
+CC =  "$(CODEGEN_INSTALLATION_DIR)/bin/arm-none-eabi-gcc"
+
+LNK = "$(CODEGEN_INSTALLATION_DIR)/bin/arm-none-eabi-gcc"
+%}
+%if(toolchain == "TI"){
+%    if(Board.variant == "msp430"){
+CC =  "$(CODEGEN_INSTALLATION_DIR)/bin/cl430"
+
+LNK = "$(CODEGEN_INSTALLATION_DIR)/bin/cl430"
+%}
+%    else{
+CC =  "$(CODEGEN_INSTALLATION_DIR)/bin/armcl"
+
+LNK = "$(CODEGEN_INSTALLATION_DIR)/bin/armcl"
+%}
+%}
+XDCTOOLS_INSTALLATION_DIR := `xdctools`
+TIRTOS_INSTALLATION_DIR := `tirtos`
+
+BIOS_INSTALLATION_DIR  ?= `bios`
+UIA_INSTALLATION_DIR   ?= `uia`
+%if(Board.name == "MSP_EXP430F5529"){
+
+XDCPATH = $(TIRTOS_INSTALLATION_DIR)/packages;$(BIOS_INSTALLATION_DIR)/packages;$(UIA_INSTALLATION_DIR)/packages;
+%}
+%else{
+NDK_INSTALLATION_DIR   ?= `ndk`
+
+XDCPATH = $(TIRTOS_INSTALLATION_DIR)/packages;$(UIA_INSTALLATION_DIR)/packages;$(NDK_INSTALLATION_DIR)/packages;$(BIOS_INSTALLATION_DIR)/packages;
+%}
+
+%if(Board.type == "TivaWare"){
+TIVAWARE_INSTALLATION_DIR ?= `tivaware`
+%}
+%if(Board.type == "MWare"){
+MWARE_INSTALLATION_DIR ?= `mware`
+%}
+%if(Board.type == "MSP430Ware"){
+MSP430WARE_INSTALLATION_DIR ?= `msp430`
+%}
+
+###################### SHOULD NOT MODIFY BELOW THIS LINE ############################
+export XDCPATH
+
+XDCTARGET = `Board.targets[toolchain]`
+
+PLATFORM = `Board.platforms[toolchain]`
+
+CFLAGS = `Board.compilerBuildOptions[toolchain+"_makefile"]`
+
+LFLAGS = `Board.linkerBuildOptions[toolchain+"_makefile"]`
+
+ifeq ("$(SHELL)","sh.exe")
+#For Windows
+        RMDIR = rmdir /S /Q
+        remove= del $(subst /,\,$1)
+else
+#For Linux
+        RMDIR = rm -rf
+        RM = rm
+endif

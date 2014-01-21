@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<gep name="Interprocess Communication" title="Interprocess Communication" version="1">
+  <page name="Interprocess Communication" title="Interprocess Communication Configuration" DPI="2540">
+<html><body><table>
+    <tr><td colspan="2">
+        <h1>Introduction</h1>
+        <form>
+            <p>Interprocess communication (IPC) mechanisms include message
+               passing, streams, and linked lists, which work transparently
+               in both uniprocessor and muiltiprocessor configurations.</p>
+        </form>
+    </td></tr>
+    <tr>
+        <td>
+            <h1>Getting Started</h1>
+            <form>
+                <p>Click the below link to bring up the IPC configuration page
+                   and select the checkbox to add IPC into your
+                   application.</p>
+            </form>
+<!--           <control type="hyperlink" link="ref:ti.sysbios.fatfs.FatFS" label="Configure FatFs for SYS/BIOS"/> -->
+        </td>
+    </tr>
+</table></body></html>
+</page>
+</gep>

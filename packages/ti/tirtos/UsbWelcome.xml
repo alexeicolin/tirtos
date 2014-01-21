@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<gep name="Universal Serial Bus" title="Universal Serial Bus MSC Host FatFs" version="1">
+  <page name="Universal Serial Bus" title="Universal Serial Bus MSC Host FatFs Configuration" DPI="2540">
+<html><body><table>
+    <tr><td colspan="2">
+        <h1>Introduction</h1>
+        <form>
+            <p>USBMSCHFatFs support for the SYS/BIOS operating system.</p>
+        </form>
+    </td></tr>
+    <tr>
+        <td>
+            <h1>Getting Started</h1>
+            <form>
+                <p>Click the below link to bring up the USBMSCHFatFs configuration page
+                   and select the checkbox to add USB support into your
+                   application.</p>
+            </form>
+<!--           <control type="hyperlink" link="ref:ti.sysbios.fatfs.FatFS" label="Configure FatFs for SYS/BIOS"/> -->
+        </td>
+    </tr>
+</table></body></html>
+</page>
+</gep>

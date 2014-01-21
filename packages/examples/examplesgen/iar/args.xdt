@@ -1,0 +1,23 @@
+%var xdcroot = $args[0];
+%var exampleroot = $args[1];
+%var tirtosVersion = $args[2];
+%var xdcpath = this.tirtosRoot + "/packages;" + this.uia + "/packages;"
+%              + this.ndk + "/packages;" + this.bios + "/packages;";
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<iarUserArgVars>
+  <group active="true" name="`tirtosVersion`">
+    <variable>
+      <name>XDCROOT</name>
+      <value>`xdcroot`</value>
+    </variable>
+    <variable>
+      <name>XDCPATH</name>
+      <value>`xdcpath`</value>
+    </variable>
+    <variable>
+      <name>EXAMPLE_ROOT</name>
+      <value>`exampleroot`</value>
+    </variable>
+  </group>
+</iarUserArgVars>

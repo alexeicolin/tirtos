@@ -1,0 +1,310 @@
+/*
+ * Copyright (c) 2013, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ *  ======== getFiles ========
+ *  Function to recursively get a list of all the files matching regEx
+ *  in directory sourceDirectory.
+ */
+function getFiles(sourceDirectory, regEx)
+{
+    var file = xdc.useModule('xdc.services.io.File');
+
+    var fileList = [];
+    if (file.isDirectory(sourceDirectory) == false) {
+        print ('WARNING: not valid source directory: \"' + sourceDirectory + '\"');
+        return [];
+    }
+    var array = file.ls(sourceDirectory, null);
+    for (item in array) {
+        var obj = sourceDirectory + "/" + array[item];
+        if (file.isDirectory(obj) == true) {
+            fileList = fileList.concat(getFiles(obj, regEx));
+        }
+        else if (obj.match(regEx) != null) {
+            fileList.push(obj);
+        }
+    }
+    return (fileList.sort());
+}
+
+/*
+ *  ======== package.bld ========
+ *
+ */
+/* Library include paths are defined from config.bld */
+if ((MSP430WareDir != "") && (MSP430Headers != "")) {
+    var commonBld = xdc.loadCapsule("ti/tirtos/build/common.bld");
+
+    var familyOptions  = commonBld.getCompilerLinkerOptions("MSP430F5529", MSP430WareDir);
+    /* Get paths */
+    var usbSourcePath  = MSP430WareDir + '/usblib430/MSP430_USB_Software/MSP430_USB_API';
+    var usbSourceFiles = getFiles(usbSourcePath + '/USB_API', /.*\.c$/);
+    var usbIncludePath = " -I" + usbSourcePath;
+    /* Compiler options */
+    var copts          = familyOptions.copts + " -I" + MSP430Headers     + " -DMSP430WARE";
+    var iarcopts       = familyOptions.copts + " -I" + IAR_MSP430Headers + " -DMSP430WARE";
+    /* Linker options */
+    var lopts          = familyOptions.lIncludeLibPath +
+                         " -i" + MSP430Headers + " " +
+                         getFiles(usbSourcePath + '/USB_API', /.*\.cmd$/).join();
+    var iarfamilyOptions = " -C " + MSP430WareDir + "/driverlib/iar-MSP430F5529/iar-MSP430F5529.r43 ";
+
+
+    var USBArray = [
+        {
+          name: ['MSP_EXP430F5529_cdc'],
+          config: ['../usbserialdevice_msp430'],
+          copts: [copts + usbIncludePath + ' -I../usbmsp430/cdc/ -I../usbmsp430/cdc/USB_config/'],
+          lopts: [lopts + " MSP_EXP430F5529.cmd -x"],
+          sources: usbSourceFiles.concat(['../usbserialdevice.c',
+                                          'MSP_EXP430F5529.c',
+                                          '../usbmsp430/cdc/USBCDCD.c',
+                                          '../usbmsp430/cdc/USB_config/descriptors.c',
+                                          '../usbmsp430/cdc/USB_config/UsbIsr.c']),
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X"],
+        },
+        {
+          name: ['MSP_EXP430F5529_hidm'],
+          config: ['../usbmousedevice_msp430'],
+          copts: [copts + usbIncludePath + ' -I../usbmsp430/hidm/ -I../usbmsp430/hidm/USB_config/'],
+          lopts: [lopts + " MSP_EXP430F5529.cmd -x"],
+          sources: usbSourceFiles.concat(['../usbmousedevice.c',
+                    'MSP_EXP430F5529.c',
+                    '../usbmsp430/hidm/USBMD.c',
+                    '../usbmsp430/hidm/USB_config/descriptors.c',
+                    '../usbmsp430/hidm/USB_config/UsbIsr.c']),
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X"],
+        },
+        {
+          name: ['MSP_EXP430F5529_hidk'],
+          config: ['../usbkeyboarddevice_msp430'],
+          copts: [copts + usbIncludePath + ' -I../usbmsp430/hidk/ -I../usbmsp430/hidk/USB_config/'],
+          lopts: [lopts + " MSP_EXP430F5529.cmd -x"],
+          sources: usbSourceFiles.concat(['../usbkeyboarddevice.c',
+                    'MSP_EXP430F5529.c',
+                    '../usbmsp430/hidk/USBKBD.c',
+                    '../usbmsp430/hidk/USB_config/descriptors.c',
+                    '../usbmsp430/hidk/USB_config/UsbIsr.c']),
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X"],
+        },
+        {
+          name: ['MSP_EXP430F5529_cdcmouse'],
+          config: ['../usbcdcmousedevice_msp430'],
+          copts: [copts + usbIncludePath + ' -I../usbmsp430/cdchidm/ -I../usbmsp430/cdchidm/USB_config/'],
+          lopts: [lopts + " MSP_EXP430F5529.cmd -x"],
+          sources: usbSourceFiles.concat(['../usbcdcmousedevice.c',
+                    'MSP_EXP430F5529.c',
+                    '../usbmsp430/cdchidm/USBCDCMOUSE.c',
+                    '../usbmsp430/cdchidm/USB_config/descriptors.c',
+                    '../usbmsp430/cdchidm/USB_config/UsbIsr.c']),
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X"],
+        },
+        {
+          name: ['MSP_EXP430F5529_uartconsole'],
+          config: ['../uartconsole_msp430'],
+          copts: [copts + usbIncludePath + ' -I../usbmsp430/cdclogging/ -I../usbmsp430/cdclogging/USB_config/'],
+          lopts: [lopts + " MSP_EXP430F5529.cmd -x"],
+          sources: usbSourceFiles.concat(['../uartconsole.c',
+                    'MSP_EXP430F5529.c',
+                    '../UARTUtils.c',
+                    '../usbmsp430/cdclogging/USBCDCD_LoggerIdle.c',
+                    '../usbmsp430/cdclogging/USB_config/descriptors.c',
+                    '../usbmsp430/cdclogging/USB_config/UsbIsr.c']),
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X"],
+        },
+    ]
+
+    var emptyArray = [
+        {
+          name: ['MSP_EXP430F5529_empty'],
+          config: ['empty'],
+          copts: [copts],
+          lopts: [lopts + " MSP_EXP430F5529.cmd -x"],
+          sources: ['empty.c', 'MSP_EXP430F5529.c'],
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X"],
+        },
+		{
+          name: ['MSP_EXP430F5529_empty_min'],
+          config: ['empty_min'],
+          copts: [copts],
+          lopts: [lopts + " MSP_EXP430F5529.cmd -x"],
+          sources: ['empty_min.c', 'MSP_EXP430F5529.c'],
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X"],
+        },
+    ]
+
+    var testArray = [
+        {
+          name: ['MSP_EXP430F5529_uart'],
+          config: ['../uartecho_msp430'],
+          copts: [copts],
+          lopts: [lopts + " MSP_EXP430F5529.cmd -x"],
+          sources: ['../uartecho.c', 'MSP_EXP430F5529.c'],
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X"],
+        },
+        {
+          name: ['MSP_EXP430F5529_uartlogging'],
+          config: ['../uartlogging_msp430'],
+          copts: [copts],
+          lopts: [lopts + " MSP_EXP430F5529.cmd -x"],
+          sources: ['../uartlogging.c', '../UARTUtils.c', '../UARTUtils.h', 'MSP_EXP430F5529.c'],
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X"],
+        },
+        {
+          name: ['MSP_EXP430F5529_i2ctpl0401evm'],
+          config: ['../i2ctpl0401evm_msp430'],
+          copts: [copts],
+          lopts: [lopts + " MSP_EXP430F5529.cmd -x"],
+          sources: ['../i2ctpl0401evm.c', 'MSP_EXP430F5529.c'],
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X"],
+        },
+        {
+          name: ['MSP_EXP430F5529_i2ctmp006'],
+          config: ['../i2ctmp006_msp430'],
+          copts: [copts],
+          lopts: [lopts + " MSP_EXP430F5529.cmd -x"],
+          sources: ['../i2ctmp006.c', 'MSP_EXP430F5529.c'],
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X"],
+        },
+        {
+          name: ['MSP_EXP430F5529_i2crf430cl330_load'],
+          config: ['../i2crf430cl330_load_msp430'],
+          copts: [copts],
+          lopts: [lopts + " MSP_EXP430F5529.cmd -x"],
+          sources: ['../i2crf430cl330_load.c', 'MSP_EXP430F5529.c'],
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X"],
+        },
+        {
+          name: ['MSP_EXP430F5529_spiloopback'],
+          config: ['../spiloopback_msp430'],
+          copts: [copts],
+          lopts: [lopts + " MSP_EXP430F5529.cmd -x"],
+          sources: ['../spiloopback.c', 'MSP_EXP430F5529.c'],
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X"],
+        },
+        {
+          name: ['MSP_EXP430F5529_fatsd'],
+          config: ['../fatsd_msp430'],
+          copts: [copts],
+          lopts: [lopts + " MSP_EXP430F5529.cmd -x"],
+          sources: ['../fatsd.c', 'MSP_EXP430F5529.c'],
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X"],
+        },
+        {
+          name: ['MSP_EXP430F5529_gpiointerrupt'],
+          config: ['../gpiointerrupt_msp430'],
+          copts: [copts],
+          lopts: [lopts + " MSP_EXP430F5529.cmd -x"],
+          sources: ['../gpiointerrupt_msp430.c', 'MSP_EXP430F5529.c'],
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X"],
+        },
+//        {
+//          name: ['MSP_EXP430F5529_AT45DB161D'],
+//          config: ['../spi_at45db161d'],
+//          copts: [copts],
+//          lopts: [lopts + " MSP_EXP430F5529.cmd -x"],
+//          sources: ['../spi_at45db161d.c', '../AT45DB.c', 'MSP_EXP430F5529.c'],
+//          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+//          nameList: ["MSP430X"],
+//        },
+        {
+          name: ['iar_MSP_EXP430F5529_empty'],
+          config: ['empty'],
+          copts: [iarcopts],
+          lopts: [iarfamilyOptions + " -f lnk430f5529.xcl"],
+          sources: ['empty.c', 'MSP_EXP430F5529.c'],
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X_small"],
+        },
+        {
+          name: ['iar_MSP_EXP430F5529_uart'],
+          config: ['../uartecho_msp430'],
+          copts: [iarcopts],
+          lopts: [iarfamilyOptions + " -f lnk430f5529.xcl"],
+          sources: ['../uartecho.c', 'MSP_EXP430F5529.c'],
+          buildPlatforms: ["ti.platforms.msp430:MSP430F5529"],
+          nameList: ["MSP430X_small"],
+        },
+    ];
+
+
+    /* Test build */
+    var testBld = xdc.loadCapsule("ti/tirtos/build/test.bld");
+
+    /* Generate the makefile goals. 'arguments' is XDCARGS */
+    arguments = ["profile=release", "platform=all"];
+
+    /* Build the examples */
+    testBld.buildTests(emptyArray, arguments);
+//    testBld.buildTests(USBArray, arguments);
+//    testBld.buildTests(testArray, arguments);
+}
+else {
+    print ("_NOT_ building MSP430 examples");
+}
+
+Pkg.makePrologue = "vpath %.c $(subst ;,  ,$(XPKGPATH))\nvpath %.asm $(subst ;,  ,$(XPKGPATH))";
+
+Pkg.otherFiles = [
+    "package.bld",
+    "empty.c",
+    "empty.cfg",
+    "empty_min.c",
+    "empty_min.cfg",
+    "MSP_EXP430F5529.c",
+    "MSP_EXP430F5529.h",
+    "MSP_EXP430F5529.cmd",
+    "Board.h",
+];
+
+/*
+ *  Export everything necessary to build this package with (almost) no
+ *  generated files.  This also exports subdirectories like 'golden'
+ *  and 'docs'.
+ */
+Pkg.attrs.exportAll = true;

@@ -1,0 +1,243 @@
+/*
+ * Copyright (c) 2013, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ *  ======== package.bld ========
+ */
+
+/* Library include paths are defined from config.bld */
+if ((typeof(TivaWareDir) == undefined) || (TivaWareDir == "")) {
+    throw("ERROR: NO VALID TIVAWARE PATH DEFINED!!!");
+}
+
+var coptsIncludePath = " -I" + TivaWareDir + " -DTIVAWARE";
+var loptsDriverLibLinkerPath  = " -l" + TivaWareDir + "/driverlib/ccs/Debug/driverlib.lib";
+var loptsUsbLibLinkerPath = " -l" + TivaWareDir + "/usblib/ccs/Debug/usblib.lib";
+
+var iarLoptsDriverLibLinkerPath  = " " + TivaWareDir + "/driverlib/ewarm/Exe/driverlib.a";
+var iarLoptsUsbLibLinkerPath = " " + TivaWareDir + "/usblib/ewarm/Exe/usblib.a";
+
+var emptyArray = [
+    {
+      name: ['DK_TM4C129X_empty'],
+      config: ['empty'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + loptsUsbLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['empty.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+	{
+      name: ['DK_TM4C129X_empty_min'],
+      config: ['empty_min'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + loptsUsbLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['empty_min.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+];
+
+var testArray = [
+    {
+      name: ['DK_TM4C129X_fatSD'],
+      config: ['../fatsd'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['../fatsd.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+    {
+      name: ['DK_TM4C129X_fatSDraw'],
+      config: ['../fatsd'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['../fatsdraw.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+    {
+      name: ['DK_TM4C129X_spiLoopback'],
+      config: ['../spiloopback'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['../spiloopback.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+    {
+      name: ['DK_TM4C129X_tmp006'],
+      config: ['../i2ctmp006'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['../i2ctmp006.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+    {
+      name: ['DK_TM4C129X_i2crf430cl330_load'],
+      config: ['../i2crf430cl330_load'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['../i2crf430cl330_load.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+    {
+      name: ['DK_TM4C129X_i2ctpl0401evm'],
+      config: ['../i2ctpl0401evm'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['../i2ctpl0401evm.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+    {
+      name: ['DK_TM4C129X_watchdog'],
+      config: ['../watchdog'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['../watchdog.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+];
+
+var usbArray = [
+    /* USB Device */
+    {
+      name: ['DK_TM4C129X_usbserial'],
+      config: ['../usbserialdevice'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + loptsUsbLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['../usbserialdevice.c', '../USBCDCD.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+    {
+      name: ['DK_TM4C129X_usbkeyboarddevice'],
+      config: ['../usbkeyboarddevice'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + loptsUsbLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['../usbkeyboarddevice.c', '../USBKBD.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+    {
+      name: ['DK_TM4C129X_usbmousedevice'],
+      config: ['../usbmousedevice'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + loptsUsbLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['../usbmousedevice.c', '../USBMD.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+    {
+      name: ['DK_TM4C129X_usbcdcmousedevice'],
+      config: ['../usbcdcmousedevice'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + loptsUsbLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['../usbcdcmousedevice.c', '../USBCDCMOUSE.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+    {
+      name: ['DK_TM4C129X_uartconsole'],
+      config: ['../uartconsole'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + loptsUsbLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['../uartconsole.c', '../USBCDCD_LoggerIdle.c', '../UARTUtils.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+    /* USB Host */
+    {
+      name: ['DK_TM4C129X_usbmousehost'],
+      config: ['../usbmousehost'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + loptsUsbLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['../usbmousehost.c', '../USBMH.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+    {
+      name: ['DK_TM4C129X_usbkeyboardhost'],
+      config: ['../usbkeyboardhost'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + loptsUsbLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['../usbkeyboardhost.c', '../USBKBH.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+    {
+      name: ['DK_TM4C129X_fatusbcopy'],
+      config: ['../fatsdusbcopy'],
+      copts: [coptsIncludePath + " -DPART_TM4C129XNCZAD"],
+      lopts: [loptsDriverLibLinkerPath + loptsUsbLibLinkerPath + " DK_TM4C129X.cmd -x"],
+      sources: ['../fatsdusbcopy.c', 'DK_TM4C129X.c'],
+      buildPlatforms: ["ti.platforms.tiva:TM4C129XNCZAD"],
+      suffixList: ["em4f"],
+    },
+];
+
+/* Test build */
+var testBld = xdc.loadCapsule("ti/tirtos/build/test.bld");
+
+Pkg.makePrologue = "vpath %.c $(subst ;,  ,$(XPKGPATH))\nvpath %.asm $(subst ;,  ,$(XPKGPATH))";
+
+/* Generate the makefile goals. 'arguments' is XDCARGS */
+arguments = ["profile=release", "platform=all"];
+
+/* Build the empty examples */
+testBld.buildTests(emptyArray, arguments);
+//testBld.buildTests(testArray, arguments);
+//testBld.buildTests(usbArray, arguments);
+
+Pkg.otherFiles = [
+    "package.bld",
+    "empty.c",
+    "empty.cfg",
+    "empty_min.c",
+    "empty_min.cfg",
+    "DK_TM4C129X.c",
+    "DK_TM4C129X.h",
+    "DK_TM4C129X.cmd",
+    "Board.h",
+];
+
+/*
+ *  Export everything necessary to build this package with (almost) no
+ *  generated files.  This also exports subdirectories like 'golden'
+ *  and 'docs'.
+ */
+Pkg.attrs.exportAll = true;

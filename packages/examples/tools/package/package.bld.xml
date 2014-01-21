@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="examples.tools" version="" producerId="undefined">
+    <units>
+    </units>
+    <sources>
+    </sources>
+    <configscripts>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/package.cfg.dep" src="package.xdc"/>
+        <srcFile name="package/rel/examples_tools.tar.gz.dep" src="package/rel/examples_tools.xdc.inc"/>
+    </makefiles>
+    <targets>
+    </targets>
+    <libraries>
+    </libraries>
+    <configurations>
+    </configurations>
+    <executables>
+    </executables>
+    <tests>
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="examples_tools"
+        pname="../../../exports/examples_tools.tar.gz"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+        <file name="readme.txt"/>
+        <file name="sockets.h"/>
+        <file name="tcpSendReceive.c"/>
+        <file name="tcpSendReceive.exe"/>
+        <file name="tcpSendReceive"/>
+        <file name="udpSendReceive.c"/>
+        <file name="udpSendReceive.exe"/>
+        <file name="udpSendReceive"/>
+        <file name="package/package.cfg.xdc.inc"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

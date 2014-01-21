@@ -1,0 +1,177 @@
+%var example = $args[0];
+%var board   = $args[1];
+%var dest    = $args[2];
+%
+%var tivaware = this.tivaware;
+%var mspware = this.msp430;
+%var tirtosRoot = this.tirtosRoot;
+%var replaceVariables = function(str) {
+%    str = str.replace(/\$\(TIVAWARE_INSTALLATION_DIR\)/g, tivaware);
+%    str = str.replace(/\$\(MSP430WARE_INSTALLATION_DIR\)/g, mspware);
+%    str = str.replace(/\$\(TIRTOS_INSTALLATION_DIR\)/g, tirtosRoot);
+%    str = str.replace(/^\s+|\s+$/g, '');
+%    return (str);
+%}
+%
+%var compilerOptions = replaceVariables(board.compilerIncludes.IAR);
+%var linkerOptions = replaceVariables(board.linkerIncludes.IAR);
+%var extraBuildOptions = example.compilerBuildOptions;
+%if (typeof extraBuildOptions === 'object' && 'IAR_makefile' in extraBuildOptions) {
+%    compilerOptions += " " + replaceVariables(extraBuildOptions.IAR_makefile);
+%}
+%/* Replace './' with $PROJ_DIR$/ */
+%compilerOptions = compilerOptions.replace(/ \.\//g, "$PROJ_DIR$/");
+%var compilerOptsArr = compilerOptions.split(" ");
+%var linkerOptsArr = linkerOptions.split(" ");
+%var device = board.platforms.IAR.split(":")[1];
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IAR Project Connection File -->
+
+<iarProjectConnection version="1.2" name="`example.title`" oneShot="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="IarProjectConnection_1.2.xsd">
+
+  <device>
+    <name>`device`</name>
+  </device>
+
+  <extraOptions>
+    <args>
+      <arg>-f</arg>
+      <arg>$PROJ_DIR$/configPkg/compiler.opt.defs</arg>
+      <arg>--diag_suppress=Pa050</arg>
+%for each (var opt in compilerOptsArr) {
+      <arg>`opt`</arg>
+%}
+    </args>
+  </extraOptions>
+
+  <linkerFile>
+    <override>false</override>
+  </linkerFile>
+
+  <linkerExtraOptions>
+    <args>
+      <arg>-f</arg>
+      <arg>$PROJ_DIR$/configPkg/linker.cmd</arg>
+%for each (var opt in linkerOptsArr) {
+      <arg>`opt`</arg>
+%}
+    </args>
+  </linkerExtraOptions>
+
+  <customBuildTools>
+    <customBuildTool name="configuro">   <!-- Custom build tool that will be assigned to a file group -->
+      <fileExtensions>.cfg</fileExtensions>
+      <command>"$XDCROOT$/bin/stderr"</command>
+      <output>
+        <path>$PROJ_DIR$/configPkg/package.mak</path>
+      </output>
+    </customBuildTool>
+  </customBuildTools>
+
+  <heaps>
+    <heap> <!-- If omitted, id="0" -->
+      <size>0</size>
+    </heap>
+    <heap id="1">
+      <size>0</size>
+    </heap>
+  </heaps>
+%
+%var cfile = [];
+%var hfile = [];
+%var docfile = [];
+%var filelist = function (obj) {
+%    for each (var file in obj.fileList) {
+%        var ext;
+%        var fname;
+%        if (typeof file == "string") {
+%            ext = file.substring(file.lastIndexOf('.'));
+%            fname = file;
+%        }
+%        else {
+%            ext = file.path.substring(file.path.lastIndexOf('.'));
+%            fname = file.path.substring(file.path.lastIndexOf("/") + 1);
+%            if (file.targetDirectory != ".") {
+%                fname = file.targetDirectory  + "/" + fname;
+%            }
+%        }
+%        switch(ext) {
+%            case ".c":
+%            case ".cpp":
+%                cfile[cfile.length++] = fname;
+%                break;
+%            case ".h":
+%                hfile[hfile.length++] = fname;
+%                break;
+%            case ".txt":
+%            case ".html":
+%                docfile[docfile.length++] = fname;
+%                break;
+%            default:
+%                break;
+%        }
+%    }
+%}
+%cfile[cfile.length++] = example.cFile;
+%filelist(example);
+%filelist(board);
+%
+%var File = xdc.useModule("xdc.services.io.File");
+%var cfg  = File.open(dest + "/" + example.cfgFile, "r");
+%var stack = 512;
+%var line = null;
+%while ((line = cfg.readLine()) != null) {
+%    if (line.match(/Program\.stack/)) {
+%        stack = line.substring(line.lastIndexOf("=") + 1, line.indexOf(";"));
+%        stack = stack.replace(/^\s+|\s+$/g, '');
+%        if (stack.match(/0x/)) {
+%            stack = stack.substring(stack.lastIndexOf("x") + 1);
+%            stack = parseInt(stack, 16);
+%        }
+%        break;
+%    }
+%}
+%cfg.close();
+%
+  <stacks>
+    <stack> <!-- If omitted, id="0" -->
+      <size>`stack`</size>
+    </stack>
+  </stacks>
+
+  <preBuild>
+    <command>"$XDCROOT$/xs" --xdcpath="$XDCPATH$" iar.tools.configuro -c "$TOOLKIT_DIR$" --cc "$COMPILER_PATH$" --device "$DEVICE$" --compileOptions $COMPILER_ARGS_ROOT_QUOTED$ --linkOptions $LINKER_ARGS_QUOTED$ --profile release --projFile "$PROJ_PATH$"</command>
+  </preBuild>
+
+  <files>
+%if (cfile.length) {
+    <group name="Source files">
+%    for each (var file in cfile) {
+      <path copyTo="$PROJ_DIR$/`file`">./`file`</path>
+%    }
+    </group>
+%}
+
+%if (hfile.length) {
+    <group name="Header files">
+%    for each (var file in hfile) {
+      <path copyTo="$PROJ_DIR$/`file`">./`file`</path>
+%    }
+    </group>
+%}
+
+    <group name="Configuration files" customBuildTool="configuro">
+       <path copyTo="$PROJ_DIR$/$PROJ_FNAME$.cfg">./`example.cfgFile`</path>
+    </group>
+
+%if (docfile.length) {
+    <group name="Documentation" build="false">
+%    for each (var file in docfile) {
+      <path copyTo="$PROJ_DIR$/`file`">./`file`</path>
+%    }
+    </group>
+%}
+  </files>
+</iarProjectConnection>

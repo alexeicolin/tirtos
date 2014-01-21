@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<gep name="SysFlex" title="SysFlex Configuration" version="1">
+
+<page name="Module" title="Module Settings">
+<html><body><table>
+  <tr>
+      <td><form>
+        <p>A System Support module which calls user specified functions.</p>
+        <p> </p>
+        <p> This ISystemSupport module allows an application to specify the
+            abort, exit, flush, putch, and ready functions. </p>
+        <p> </p>
+      </form></td>
+  </tr>
+  <tr>
+    <td><control type="checkbox" label="Add the SysFLex module to my configuration" value="value:this.$used" bold="true"/></td>
+  </tr>
+  <tr></tr>
+  <tr><td>
+    <h1>SysFlex Options</h1>
+    <table>
+      <tr>
+        <td><control type="label" label="Abort Function" align="left"/></td>
+        <td><control type="editbox"
+             value="value:this.abortFxn"
+             tooltip="value:this.abortFxn.$summary"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Exit Function" align="left"/></td>
+        <td><control type="editbox"
+             value="value:this.exitFxn"
+             tooltip="value:this.exitFxn.$summary"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Flush Function" align="left"/></td>
+        <td><control type="editbox"
+             value="value:this.flushFxn"
+             tooltip="value:this.flushFxn.$summary"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Putch Function" align="left"/></td>
+        <td><control type="editbox"
+             value="value:this.putchFxn"
+             tooltip="value:this.putchFxn.$summary"/></td>
+      </tr>
+      <tr>
+        <td><control type="label" label="Ready Function" align="left"/></td>
+        <td><control type="editbox"
+             value="value:this.readyFxn"
+             tooltip="value:this.readyFxn.$summary"/></td>
+      </tr>
+    </table>
+  </td></tr>
+</table></body></html>
+</page>
+</gep>

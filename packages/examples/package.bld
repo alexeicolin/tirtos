@@ -1,0 +1,139 @@
+/*
+ * Copyright (c) 2013, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ *  Export everything necessary to build this package with (almost) no
+ *  generated files.  This also exports subdirectories like 'golden'
+ *  and 'docs'.
+ */
+
+Pkg.otherFiles = [
+    "Boards.xs",
+    "TrexExamples.xs",
+    "Examplesgen.xs",
+
+    "gpiointerrupt.c",
+    "gpiointerrupt_msp430.c",
+    "fatsd.c",
+    "fatsdraw.c",
+    "fatsdusbcopy.c",
+    "i2ceeprom.c",
+    "tcpEcho.c",
+    "tcpEchoIPv6.c",
+    "tcpEchoCC3000.c",
+    "udpEchoCC3000.c",
+    "udpEcho.c",
+    "udpEchoIPv6.c",
+    "uartconsole.c",
+    "uartecho.c",
+    "uartlogging.c",
+    "UARTUtils.c",
+    "USBCDCD.c",
+    "USBCDCD_LoggerIdle.c",
+    "USBCDCMOUSE.c",
+    "usbcdcmousedevice.c",
+    "USBKBD.c",
+    "USBKBH.c",
+    "usbkeyboarddevice.c",
+    "usbkeyboardhost.c",
+    "USBMD.c",
+    "USBMH.c",
+    "usbmousedevice.c",
+    "usbmousehost.c",
+    "USBMSCD.c",
+    "usbserialdevice.c",
+    "watchdog.c",
+    "watchdog_msp430.c",
+
+    "fatsd.cfg",
+    "fatsdusbcopy.cfg",
+    "gpiointerrupt.cfg",
+    "gpiointerrupt_msp430.cfg",
+    "i2ceeprom.cfg",
+    "tcpEcho.cfg",
+    "tcpEchoIPv6.cfg",
+    "tcpEchoCC3000.cfg",
+    "tcpEchoCC3000_msp430f5529lp.cfg",
+    "tcpEchoCC3000_msp430f5529exp.cfg",
+    "udpEchoCC3000.cfg",
+    "udpEchoCC3000_msp430f5529lp.cfg",
+    "udpEchoCC3000_msp430f5529exp.cfg",
+    "udpEcho.cfg",
+    "udpEchoIPv6.cfg",
+    "uartconsole.cfg",
+    "uartecho.cfg",
+    "uartecho_msp430.cfg",
+    "usbcdcmousedevice.cfg",
+    "usbkeyboarddevice.cfg",
+    "usbkeyboardhost.cfg",
+    "usbmousedevice.cfg",
+    "usbmousehost.cfg",
+    "usbserialdevice.cfg",
+    "watchdog.cfg",
+    "watchdog_msp430.cfg",
+
+    "UARTUtils.h",
+    "USBCDCD.h",
+    "USBCDCD_LoggerIdle.h",
+    "USBCDCMOUSE.h",
+    "USBKBD.h",
+    "USBKBH.h",
+    "USBMD.h",
+    "USBMH.h",
+    "USBMSCD.h",
+
+    "fatsd_readme.txt",
+    "fatsdraw_readme.txt",
+    "fatsdusbcopy_readme.txt",
+    "i2ceeprom_readme.txt",
+    "tcpEcho_readme.txt",
+    "tcpEchoIPv6_readme.txt",
+    "tcpEchoCC3000_readme.txt",
+    "tcpEchoCC3000_msp430_readme.txt",
+    "udpEchoCC3000_readme.txt",
+    "udpEchoCC3000_msp430_readme.txt",
+    "udpEcho_readme.txt",
+    "udpEchoIPv6_readme.txt",
+    "uartconsole_readme.txt",
+    "uartecho_readme.txt",
+    "uartlogging_readme.txt",
+    "usbcdcmousedevice_readme.txt",
+    "usbkeyboarddevice_readme.txt",
+    "usbkeyboardhost_readme.txt",
+    "usbmousedevice_readme.txt",
+    "usbmousehost_readme.txt",
+    "usbserialdevice_readme.txt",
+    "watchdog_readme.txt",
+    "watchdog_msp430_readme.txt",
+];
+
+Pkg.attrs.exportAll = true;
