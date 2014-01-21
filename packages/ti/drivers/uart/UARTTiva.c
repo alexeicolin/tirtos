@@ -55,6 +55,9 @@
 
 /* Enable only the polling API (saves on generating unneeeded interrupts) */
 #define POLLING_ONLY
+/* Set the UART clock source to internal oscillator (useful to have
+ * UART work smoothly across deep sleeps) */
+#define PIOSC_CLKSRC
 
 /* UARTTiva functions */
 Void         UARTTiva_close(UART_Handle handle);
@@ -370,10 +373,18 @@ UART_Handle UARTTiva_open(UART_Handle handle, UART_Params *params)
 #endif
     UARTEnable(hwAttrs->baseAddr);
 
+#ifdef PIOSC_CLKSRC
+    /* So that baud rate doesn't change when transitioning into sleep states */
+    UARTClockSourceSet(hwAttrs->baseAddr, UART_CLOCK_PIOSC);
+    freq.hi = 0;
+    freq.lo = 16000000; /* docs in tivaware/driverlib/uart.c say hardcode */
+#else
+    BIOS_getCpuFreq(&freq);
+#endif
+
     /* Set the FIFO level to 7/8 empty and 7/8 full. */
     UARTFIFOLevelSet(hwAttrs->baseAddr, UART_FIFO_TX1_8, UART_FIFO_RX7_8);
 
-    BIOS_getCpuFreq(&freq);
     UARTConfigSetExpClk(hwAttrs->baseAddr,
                         freq.lo,
                         params->baudRate,
