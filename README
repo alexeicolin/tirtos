@@ -1,0 +1,17 @@
+To build, setup the pointers to the dependencies (probably use the products/ dir
+of a TI-RTOS distribution):
+
+    $ export XDCTOOLS_INSTALLATION_DIR=/path/to/xdctools_3_25_05_94
+    $ TIRTOS_DEPS=/path/to/tirtos_1_21_00_09/products
+    $ export BIOS_INSTALLATION_DIR=$TIRTOS_DEPS/bios_3_67_00_20
+    $ export IPC_INSTALLATION_DIR=$TIRTOS_DEPS/ipc_3_10_01_11
+    $ export UIA_INSTALLATION_DIR=$TIRTOS_DEPS/uia_1_04_00_06
+    $ export NDK_INSTALLATION_DIR=$TIRTOS_DEPS/ndk_2_23_01_01
+    $ export TIVAWARE_INSTALLATION_DIR=$TIRTOS_DEPS/TivaWare_C_Series-2.0.1.11577a
+    $ export MWARE_INSTALLATION_DIR=''
+
+Note that it is important to set the MWARE dir in order to override the default
+and prevent the MWARE targets from being added to the build list.
+
+    $ make -f tirtos.mak CCS_BUILD=false TIRTOS_INSTALLATION_DIR=$PWD \
+        GCC_INSTALLATION_DIR=/usr drivers
