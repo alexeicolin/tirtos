@@ -1,0 +1,18 @@
+.*.swp
+
+.xdcenv.mak
+.dlls
+.interfaces
+.executables
+.libraries
+.libraries,*
+package.mak
+lib/
+package/
+
+instrumented.p*
+nonInstrumented.p*
+
+# Auto-generated headers
+packages/ti/tirtos/ipc/SPIMessageQTransport.h
+packages/ti/tirtos/utils/SysFlex.h
