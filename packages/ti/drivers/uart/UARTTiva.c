@@ -53,6 +53,9 @@
 #include <driverlib/sysctl.h>
 #endif
 
+/* Enable only the polling API (saves on generating unneeeded interrupts) */
+#define POLLING_ONLY
+
 /* UARTTiva functions */
 Void         UARTTiva_close(UART_Handle handle);
 Void         UARTTiva_init(UART_Handle handle);
@@ -361,8 +364,10 @@ UART_Handle UARTTiva_open(UART_Handle handle, UART_Params *params)
     }
 
     /* Enable UART and its interrupt. */
+#ifndef POLLING_ONLY
     UARTIntClear(hwAttrs->baseAddr, (UART_INT_TX | UART_INT_RX | UART_INT_RT));
     UARTIntEnable(hwAttrs->baseAddr, (UART_INT_TX | UART_INT_RX | UART_INT_RT));
+#endif
     UARTEnable(hwAttrs->baseAddr);
 
     /* Set the FIFO level to 7/8 empty and 7/8 full. */
@@ -394,7 +399,9 @@ Void UARTTiva_close(UART_Handle handle)
     UARTTiva_HWAttrs const    *hwAttrs = handle->hwAttrs;
 
     /* Disable UART and interrupts. */
+#ifndef POLLING_ONLY
     UARTIntDisable(hwAttrs->baseAddr, UART_INT_TX | UART_INT_RX | UART_INT_RT);
+#endif
     UARTDisable(hwAttrs->baseAddr);
 
     /* Destruct the SYS/BIOS objects. */
