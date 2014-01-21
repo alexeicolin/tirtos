@@ -133,7 +133,8 @@ help:
 	@ echo   goal              description
 	@ echo  -----------------------------------------------------------------------------
 	@ echo   all               Builds SYS/BIOS, IPC, NDK, UIA, and TI-RTOS drivers
-	@ echo   drivers           Builds TI-RTOS drivers and other components in /packages
+	@ echo   drivers           Builds TI-RTOS drivers and other components in /packages/ti
+	@ echo   examples          Builds TI-RTOS examples
 	@ echo   bios              Builds SYS/BIOS
 	@ echo   ipc               Builds IPC
 	@ echo   ndk               Builds NDK
@@ -155,12 +156,20 @@ all: bios ipc ndk uia drivers
 clean: clean-bios clean-ipc clean-ndk clean-uia clean-drivers
 
 drivers: $(allmsp430ware)
-	@ echo building tirtos packages ...
-	@ $(XDC) -Pr ./packages
+	@ echo building ti.* packages ...
+	@ $(XDC) -PR ./packages/ti
 
 clean-drivers: clean-msp430ware
-	@ echo cleaning tirtos packages ...
-	@ $(XDC) clean -Pr ./packages
+	@ echo cleaning ti.* packages ...
+	@ $(XDC) clean -PR ./packages/ti
+
+examples: $(allmsp430ware)
+	@ echo building examples packages ...
+	@ $(XDC) -PR ./packages/examples
+
+clean-examples: clean-msp430ware
+	@ echo cleaning examples packages ...
+	@ $(XDC) clean -PR ./packages/examples
 
 bios:
 	@ echo building bios ...
